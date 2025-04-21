@@ -409,6 +409,9 @@ message UserInfoReply {
 	string raw = 30;
 
 	string myAddress = 14; // 我的地址
+	uint64 closeBuy = 16; // 1关闭认购
+	uint64 amount = 17; // 认购总数
+
 	string inviteUserAddress = 15; // 我的直推人地址
 	uint64 level = 6; // 我的vip级别
 

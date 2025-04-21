@@ -655,16 +655,17 @@ func (uuc *UserUseCase) UserInfo(ctx context.Context, user *User) (*v1.UserInfoR
 		bPrice                float64
 		withdrawMin           float64
 		withdrawMax           float64
-		allOne                float64
-		allTwo                float64
-		users                 []*User
+		//allOne                float64
+		//allTwo                float64
+		closeBuy uint64
+		users    []*User
 	)
 
 	// 配置
 	configs, err = uuc.configRepo.GetConfigByKeys(ctx,
 		"b_price",
 		"withdraw_amount_max",
-		"withdraw_amount_min", "all_one", "all_two",
+		"withdraw_amount_min", "all_one", "all_two", "close_buy",
 	)
 	if nil != configs {
 		for _, vConfig := range configs {
@@ -677,10 +678,13 @@ func (uuc *UserUseCase) UserInfo(ctx context.Context, user *User) (*v1.UserInfoR
 			if "b_price" == vConfig.KeyName {
 				bPrice, _ = strconv.ParseFloat(vConfig.Value, 10)
 			}
-			if "all_one" == vConfig.KeyName {
-				allOne, _ = strconv.ParseFloat(vConfig.Value, 10)
-			} else if "all_two" == vConfig.KeyName {
-				allTwo, _ = strconv.ParseFloat(vConfig.Value, 10)
+			//if "all_one" == vConfig.KeyName {
+			//	allOne, _ = strconv.ParseFloat(vConfig.Value, 10)
+			//} else if "all_two" == vConfig.KeyName {
+			//	allTwo, _ = strconv.ParseFloat(vConfig.Value, 10)
+			//}
+			if "close_buy" == vConfig.KeyName {
+				closeBuy, _ = strconv.ParseUint(vConfig.Value, 10, 64)
 			}
 		}
 	}
@@ -1038,111 +1042,112 @@ func (uuc *UserUseCase) UserInfo(ctx context.Context, user *User) (*v1.UserInfoR
 	//}
 
 	four := float64(0)
-	if 1 == myUser.Last {
-		four = 1.5*myUser.AmountUsdt - myUser.AmountUsdtGet
-	} else if 2 == myUser.Last {
-		four = 2*myUser.AmountUsdt - myUser.AmountUsdtGet
-	} else if 3 == myUser.Last {
-		four = 2.5*myUser.AmountUsdt - myUser.AmountUsdtGet
-	} else if 4 == myUser.Last {
-		four = 3*myUser.AmountUsdt - myUser.AmountUsdtGet
-	} else if 5 == myUser.Last {
-		four = 3.5*myUser.AmountUsdt - myUser.AmountUsdtGet
-	}
+	//if 1 == myUser.Last {
+	//	four = 1.5*myUser.AmountUsdt - myUser.AmountUsdtGet
+	//} else if 2 == myUser.Last {
+	//	four = 2*myUser.AmountUsdt - myUser.AmountUsdtGet
+	//} else if 3 == myUser.Last {
+	//	four = 2.5*myUser.AmountUsdt - myUser.AmountUsdtGet
+	//} else if 4 == myUser.Last {
+	//	four = 3*myUser.AmountUsdt - myUser.AmountUsdtGet
+	//} else if 5 == myUser.Last {
+	//	four = 3.5*myUser.AmountUsdt - myUser.AmountUsdtGet
+	//}
 
 	tmpVip := uint64(0)
-	if 0 < myUser.VipAdmin {
-		tmpVip = uint64(myUser.VipAdmin)
-	} else {
-		tmpVip = uint64(myUser.Vip)
-	}
+	//if 0 < myUser.VipAdmin {
+	//	tmpVip = uint64(myUser.VipAdmin)
+	//} else {
+	//	tmpVip = uint64(myUser.Vip)
+	//}
 
-	var (
-		total *Total
-	)
-	total, err = uuc.ubRepo.GetTotal(ctx)
-	if nil == total {
-		fmt.Println("今日分红错误用户获取失败，total")
-		return nil, nil
-	}
+	//var (
+	//	total *Total
+	//)
+	//total, err = uuc.ubRepo.GetTotal(ctx)
+	//if nil == total {
+	//	fmt.Println("今日分红错误用户获取失败，total")
+	//	return nil, nil
+	//}
+	//
+	//var (
+	//	usersOrderAmountBiw []*User
+	//)
+	//usersOrderAmountBiw, err = uuc.repo.GetAllUsersOrderAmountBiw(ctx)
+	//if nil != err {
+	//	fmt.Println("今日分红错误用户获取失败，total，推荐人数")
+	//	return nil, nil
+	//}
+	//
+	//listTwo := make([]*v1.UserInfoReply_ListTwo, 0)
+	//for k, v := range usersOrderAmountBiw {
+	//	if 0 >= v.AmountBiw {
+	//		continue
+	//	}
+	//
+	//	if 0 == k {
+	//		listTwo = append(listTwo, &v1.UserInfoReply_ListTwo{
+	//			Address: v.Address,
+	//			Num:     v.AmountBiw,
+	//			Reward:  fmt.Sprintf("%.2f", total.One*allOne*0.5),
+	//		})
+	//	} else if 1 == k {
+	//		listTwo = append(listTwo, &v1.UserInfoReply_ListTwo{
+	//			Address: v.Address,
+	//			Num:     v.AmountBiw,
+	//			Reward:  fmt.Sprintf("%.2f", total.One*allOne*0.3),
+	//		})
+	//	} else if 2 == k {
+	//		listTwo = append(listTwo, &v1.UserInfoReply_ListTwo{
+	//			Address: v.Address,
+	//			Num:     v.AmountBiw,
+	//			Reward:  fmt.Sprintf("%.2f", total.One*allOne*0.2),
+	//		})
+	//	} else {
+	//		break
+	//	}
+	//}
 
-	var (
-		usersOrderAmountBiw []*User
-	)
-	usersOrderAmountBiw, err = uuc.repo.GetAllUsersOrderAmountBiw(ctx)
-	if nil != err {
-		fmt.Println("今日分红错误用户获取失败，total，推荐人数")
-		return nil, nil
-	}
-
-	listTwo := make([]*v1.UserInfoReply_ListTwo, 0)
-	for k, v := range usersOrderAmountBiw {
-		if 0 >= v.AmountBiw {
-			continue
-		}
-
-		if 0 == k {
-			listTwo = append(listTwo, &v1.UserInfoReply_ListTwo{
-				Address: v.Address,
-				Num:     v.AmountBiw,
-				Reward:  fmt.Sprintf("%.2f", total.One*allOne*0.5),
-			})
-		} else if 1 == k {
-			listTwo = append(listTwo, &v1.UserInfoReply_ListTwo{
-				Address: v.Address,
-				Num:     v.AmountBiw,
-				Reward:  fmt.Sprintf("%.2f", total.One*allOne*0.3),
-			})
-		} else if 2 == k {
-			listTwo = append(listTwo, &v1.UserInfoReply_ListTwo{
-				Address: v.Address,
-				Num:     v.AmountBiw,
-				Reward:  fmt.Sprintf("%.2f", total.One*allOne*0.2),
-			})
-		} else {
-			break
-		}
-	}
-
-	var (
-		usersOrderRecommendOrder []*User
-	)
-	usersOrderRecommendOrder, err = uuc.repo.GetAllUsersRecommendOrder(ctx)
-	if nil != err {
-		fmt.Println("今日分红错误用户获取失败，total，推荐1人数")
-		return nil, nil
-	}
-
-	list := make([]*v1.UserInfoReply_List, 0)
-	for k, v := range usersOrderRecommendOrder {
-		if 0 >= v.AmountRecommendUsdtGet {
-			continue
-		}
-
-		if 0 == k {
-			list = append(list, &v1.UserInfoReply_List{
-				Address: v.Address,
-				Amount:  fmt.Sprintf("%.2f", v.AmountRecommendUsdtGet),
-				Reward:  fmt.Sprintf("%.2f", total.One*allTwo*0.5),
-			})
-		} else if 1 == k {
-			list = append(list, &v1.UserInfoReply_List{
-				Address: v.Address,
-				Amount:  fmt.Sprintf("%.2f", v.AmountRecommendUsdtGet),
-				Reward:  fmt.Sprintf("%.2f", total.One*allTwo*0.3),
-			})
-		} else if 2 == k {
-			list = append(list, &v1.UserInfoReply_List{
-				Address: v.Address,
-				Amount:  fmt.Sprintf("%.2f", v.AmountRecommendUsdtGet),
-				Reward:  fmt.Sprintf("%.2f", total.One*allTwo*0.2),
-			})
-		} else {
-			break
-		}
-	}
+	//var (
+	//	usersOrderRecommendOrder []*User
+	//)
+	//usersOrderRecommendOrder, err = uuc.repo.GetAllUsersRecommendOrder(ctx)
+	//if nil != err {
+	//	fmt.Println("今日分红错误用户获取失败，total，推荐1人数")
+	//	return nil, nil
+	//}
+	//
+	//list := make([]*v1.UserInfoReply_List, 0)
+	//for k, v := range usersOrderRecommendOrder {
+	//	if 0 >= v.AmountRecommendUsdtGet {
+	//		continue
+	//	}
+	//
+	//	if 0 == k {
+	//		list = append(list, &v1.UserInfoReply_List{
+	//			Address: v.Address,
+	//			Amount:  fmt.Sprintf("%.2f", v.AmountRecommendUsdtGet),
+	//			Reward:  fmt.Sprintf("%.2f", total.One*allTwo*0.5),
+	//		})
+	//	} else if 1 == k {
+	//		list = append(list, &v1.UserInfoReply_List{
+	//			Address: v.Address,
+	//			Amount:  fmt.Sprintf("%.2f", v.AmountRecommendUsdtGet),
+	//			Reward:  fmt.Sprintf("%.2f", total.One*allTwo*0.3),
+	//		})
+	//	} else if 2 == k {
+	//		list = append(list, &v1.UserInfoReply_List{
+	//			Address: v.Address,
+	//			Amount:  fmt.Sprintf("%.2f", v.AmountRecommendUsdtGet),
+	//			Reward:  fmt.Sprintf("%.2f", total.One*allTwo*0.2),
+	//		})
+	//	} else {
+	//		break
+	//	}
+	//}
 
 	return &v1.UserInfoReply{
+		CloseBuy:          closeBuy,
 		Raw:               fmt.Sprintf("%.2f", userBalance.BalanceRawFloat),
 		FourOne:           fmt.Sprintf("%.2f", myUser.AmountUsdtGet),
 		FiveOne:           fmt.Sprintf("%.2f", userBalance.LocationTotalFloat),
@@ -1160,13 +1165,13 @@ func (uuc *UserUseCase) UserInfo(ctx context.Context, user *User) (*v1.UserInfoR
 		InviteUserAddress: inviteUserAddress,
 		Level:             tmpVip,
 		Price:             bPrice,
-		Five:              fmt.Sprintf("%.2f", total.One*allOne),
-		Six:               fmt.Sprintf("%.2f", total.One*allTwo),
-		Seven:             fmt.Sprintf("%.2f", float64(myUser.RecommendUserH)),
-		WithdrawMin:       withdrawMin,
-		WithdrawMax:       withdrawMax,
-		List:              list,
-		ListTwo:           listTwo,
+		//Five:              fmt.Sprintf("%.2f", total.One*allOne),
+		//Six:               fmt.Sprintf("%.2f", total.One*allTwo),
+		Seven:       fmt.Sprintf("%.2f", float64(myUser.RecommendUserH)),
+		WithdrawMin: withdrawMin,
+		WithdrawMax: withdrawMax,
+		//List:              list,
+		//ListTwo:           listTwo,
 	}, nil
 }
 

@@ -1126,6 +1126,10 @@ components:
                     type: string
                 myAddress:
                     type: string
+                closeBuy:
+                    type: string
+                amount:
+                    type: string
                 inviteUserAddress:
                     type: string
                 level:
