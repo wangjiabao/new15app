@@ -1148,6 +1148,7 @@ func (uuc *UserUseCase) UserInfo(ctx context.Context, user *User) (*v1.UserInfoR
 
 	return &v1.UserInfoReply{
 		CloseBuy:          closeBuy,
+		Amount:            myUser.Amount,
 		Raw:               fmt.Sprintf("%.2f", userBalance.BalanceRawFloat),
 		FourOne:           fmt.Sprintf("%.2f", myUser.AmountUsdtGet),
 		FiveOne:           fmt.Sprintf("%.2f", userBalance.LocationTotalFloat),
