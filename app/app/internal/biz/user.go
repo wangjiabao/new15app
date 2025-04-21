@@ -490,35 +490,35 @@ func (uuc *UserUseCase) GetExistUserByAddressOrCreate(ctx context.Context, u *Us
 				return err
 			}
 
-			if 0 < recommendUser.UserId && nil != rUser {
-
-				tmpRUser := rUser.RecommendUser
-				tmpRUser += 1
-				tmpRewardHb := int64(0)
-				if 1 == tmpRUser {
-
-				} else if 3 == tmpRUser {
-					tmpRewardHb = 299
-				} else if 8 == tmpRUser {
-					tmpRewardHb = 999
-				} else if 16 == tmpRUser {
-					tmpRewardHb = 2999
-				} else if 50 == tmpRUser {
-					tmpRewardHb = 5999
-				} else if 100 == tmpRUser {
-					tmpRewardHb = 9999
-				}
-
-				tmpRewardU := false
-				if 20 > rUser.RecommendUserReward {
-					tmpRewardU = true
-				}
-
-				err = uuc.repo.UpdateUserMyRecommendTotalNum(ctx, recommendUser.UserId, u.Address, tmpRewardHb, tmpRewardU)
-				if err != nil {
-					return err
-				}
-			}
+			//if 0 < recommendUser.UserId && nil != rUser {
+			//
+			//	tmpRUser := rUser.RecommendUser
+			//	tmpRUser += 1
+			//	tmpRewardHb := int64(0)
+			//	if 1 == tmpRUser {
+			//
+			//	} else if 3 == tmpRUser {
+			//		tmpRewardHb = 299
+			//	} else if 8 == tmpRUser {
+			//		tmpRewardHb = 999
+			//	} else if 16 == tmpRUser {
+			//		tmpRewardHb = 2999
+			//	} else if 50 == tmpRUser {
+			//		tmpRewardHb = 5999
+			//	} else if 100 == tmpRUser {
+			//		tmpRewardHb = 9999
+			//	}
+			//
+			//	tmpRewardU := false
+			//	if 20 > rUser.RecommendUserReward {
+			//		tmpRewardU = true
+			//	}
+			//
+			//	err = uuc.repo.UpdateUserMyRecommendTotalNum(ctx, recommendUser.UserId, u.Address, tmpRewardHb, tmpRewardU)
+			//	if err != nil {
+			//		return err
+			//	}
+			//}
 
 			return nil
 		}); err != nil {
